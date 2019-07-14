@@ -1,7 +1,7 @@
 /*
  * Responsive Attributes
  * http://ivopetkov.com/
- * Copyright 2016, Ivo Petkov
+ * Copyright (c) Ivo Petkov
  * Free to use under the MIT license.
  */
 
@@ -40,11 +40,25 @@ responsiveAttributes = (function () {
         return cache[value];
     };
 
-    var checkExpression = function (element, expression) {
-        return (new Function('return ' + expression
-            .split('w').join(element.responsiveAttributesCache[0])
-            .split('h').join(element.responsiveAttributesCache[1])
-        ))();
+    var checkExpression = function (element, expression, details) {
+        var functions = [];
+        for (var i = 0; i < 100; i++) {
+            var key = 'f' + functions.length;
+            var match = expression.match(/f\((.*?)\)/);
+            if (match === null) {
+                break;
+            }
+            expression = expression.replace(match[0], key);
+            functions.push([key, match[1]]);
+        }
+        expression = expression
+            .split('w').join(details.width)
+            .split('h').join(details.height);
+        for (var i = functions.length - 1; i >= 0; i--) {
+            var f = functions[i];
+            expression = expression.replace(f[0], f[1] + '(element,details)');
+        }
+        return (new Function('element', 'details', 'return ' + expression))(element, details);
     };
 
     var run = function () {
@@ -53,7 +67,10 @@ responsiveAttributes = (function () {
         for (var i = 0; i < elementsCount; i++) {
             var element = elements[i];
             var rectangle = element.getBoundingClientRect();
-            element.responsiveAttributesCache = [Math.round(rectangle.width), Math.round(rectangle.height)];
+            var details = {
+                'width': rectangle.width,
+                'height': rectangle.height
+            };
             var data = parseAttributeValue(element.getAttribute('data-responsive-attributes'));
             for (var attributeName in data) {
                 var attributeValue = element.getAttribute(attributeName);
@@ -61,12 +78,11 @@ responsiveAttributes = (function () {
                     attributeValue = '';
                 }
                 var attributeValueParts = attributeValue.length > 0 ? attributeValue.split(' ') : [];
-
                 var values = data[attributeName];
                 var valuesCount = values.length;
                 for (var k = 0; k < valuesCount; k++) {
                     var value = values[k][1];
-                    var add = checkExpression(element, values[k][0]);
+                    var add = checkExpression(element, values[k][0], details);
                     var found = false;
                     var attributeValuePartsCount = attributeValueParts.length;
                     for (var m = 0; m < attributeValuePartsCount; m++) {

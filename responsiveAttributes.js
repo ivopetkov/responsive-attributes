@@ -42,9 +42,9 @@ responsiveAttributes = (function () {
 
     var checkExpression = function (element, expression) {
         return (new Function('return ' + expression
-                .split('w').join(element.responsiveAttributesCache[0])
-                .split('h').join(element.responsiveAttributesCache[1])
-                ))();
+            .split('w').join(element.responsiveAttributesCache[0])
+            .split('h').join(element.responsiveAttributesCache[1])
+        ))();
     };
 
     var run = function () {
@@ -96,7 +96,7 @@ responsiveAttributes = (function () {
             var observer = new MutationObserver(function () {
                 run();
             });
-            observer.observe(document.querySelector('body'), {childList: true, subtree: true});
+            observer.observe(document.querySelector('body'), { childList: true, subtree: true });
         }
     };
     if (document.readyState === 'loading') {
@@ -105,6 +105,6 @@ responsiveAttributes = (function () {
         attachEvents();
     }
 
-    return {'run': run};
+    return { 'run': run };
 
 }());

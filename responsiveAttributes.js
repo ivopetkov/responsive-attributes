@@ -52,7 +52,9 @@ responsiveAttributes = (function () {
             functions.push([key, match[1]]);
         }
         expression = expression
+            .split('vw').join(window.innerWidth)
             .split('w').join(details.width)
+            .split('vh').join(window.innerHeight)
             .split('h').join(details.height);
         for (var i = functions.length - 1; i >= 0; i--) {
             var f = functions[i];
@@ -61,7 +63,12 @@ responsiveAttributes = (function () {
         return (new Function('element', 'details', 'return ' + expression))(element, details);
     };
 
+    var running = false;
     var run = function () {
+        if (running) {
+            return;
+        }
+        running = true;
         var elements = document.querySelectorAll('[data-responsive-attributes]');
         var elementsCount = elements.length;
         for (var i = 0; i < elementsCount; i++) {
@@ -100,9 +107,13 @@ responsiveAttributes = (function () {
                     }
                 }
 
-                element.setAttribute(attributeName, attributeValueParts.join(' '));
+                var valueToSet = attributeValueParts.join(' ');
+                if (element.getAttribute(attributeName) !== valueToSet) {
+                    element.setAttribute(attributeName, valueToSet);
+                }
             }
         }
+        running = false;
     };
 
     var attachEvents = function () {

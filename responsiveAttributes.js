@@ -60,7 +60,11 @@ responsiveAttributes = (function () {
             var f = functions[i];
             expression = expression.replace(f[0], f[1] + '(element,details)');
         }
-        return (new Function('element', 'details', 'return ' + expression))(element, details);
+        try {
+            return (new Function('element', 'details', 'return ' + expression))(element, details);
+        } catch (e) {
+            return false;
+        }
     };
 
     var running = false;

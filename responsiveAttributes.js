@@ -5,7 +5,7 @@
  * Free to use under the MIT license.
  */
 
-responsiveAttributes = (function () {
+var responsiveAttributes = typeof responsiveAttributes !== 'undefined' ? responsiveAttributes : (function () {
 
     var cache = [];
 
@@ -42,7 +42,7 @@ responsiveAttributes = (function () {
 
     var checkExpression = function (element, expression, details) {
         var functions = [];
-        for (var i = 0; i < 100; i++) {
+        for (var i = 0; i < 1000; i++) {
             var key = 'f' + functions.length;
             var match = expression.match(/f\((.*?)\)/);
             if (match === null) {
@@ -50,6 +50,16 @@ responsiveAttributes = (function () {
             }
             expression = expression.replace(match[0], key);
             functions.push([key, match[1]]);
+        }
+        var querySelectors = [];
+        for (var i = 0; i < 1000; i++) {
+            var key = 'q' + querySelectors.length;
+            var match = expression.match(/q\((.*?)\)/);
+            if (match === null) {
+                break;
+            }
+            expression = expression.replace(match[0], key);
+            querySelectors.push([key, match[1]]);
         }
         expression = expression
             .split('vw').join(window.innerWidth)
@@ -59,6 +69,11 @@ responsiveAttributes = (function () {
         for (var i = functions.length - 1; i >= 0; i--) {
             var f = functions[i];
             expression = expression.replace(f[0], f[1] + '(element,details)');
+        }
+        for (var i = querySelectors.length - 1; i >= 0; i--) {
+            var f = querySelectors[i];
+            var result = document.querySelector(f[1]) !== null;
+            expression = expression.replace(f[0], result ? 'true' : 'false');
         }
         try {
             return (new Function('element', 'details', 'return ' + expression))(element, details);
@@ -123,6 +138,7 @@ responsiveAttributes = (function () {
     var attachEvents = function () {
         window.addEventListener('resize', run);
         window.addEventListener('load', run);
+        window.addEventListener('orientationchange', run);
         if (typeof MutationObserver !== 'undefined') {
             var observer = new MutationObserver(function () {
                 run();

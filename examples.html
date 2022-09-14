@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,minimal-ui">
+    <script src="responsiveAttributes.js"></script>
+    <style>
+        html,
+        body {
+            padding: 0;
+            margin: 0;
+            background-color: #fff;
+            font-family: Arial;
+            font-size: 15px;
+        }
+
+        div {
+            height: 40px;
+            background-color: #ccc;
+            margin: 40px;
+        }
+
+        div:before {
+            content: attr(data-responsive-attributes);
+            line-height: 40px;
+            display: block;
+            width: 100%;
+            height: 40px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            padding: 0 12px;
+            color: #111;
+            box-sizing: border-box;
+        }
+
+        [data-state="active"] {
+            background: green;
+        }
+
+        [data-state="active"]:before {
+            color: #fff;
+        }
+
+        [data-state2="active"] {
+            background: rgb(82, 6, 198);
+        }
+
+        [data-state2="active"]:before {
+            color: #fff;
+        }
+    </style>
+    <script>
+        function check1(element, details) {
+            return details.width < 300;
+        }
+    </script>
+</head>
+
+<body data-property1="value1">
+    <div data-responsive-attributes="w<500=>data-state=active"></div>
+    <div data-responsive-attributes="vw<500=>data-state=active"></div>
+    <div data-responsive-attributes="vw<=500=>data-state=active"></div>
+    <div data-responsive-attributes="w<700=>data-state=active,w<500=>data-state2=active"></div>
+    <div data-responsive-attributes="w<500&&f(check1)=>data-state=active"></div>
+    <div data-responsive-attributes="w<500&&q(body[data-property1=value1])=>data-state=active"></div>
+    <div data-responsive-attributes="w<500&&q(body[data-property1=value2])=>data-state=active"></div>
+</body>
+
+</html>

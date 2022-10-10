@@ -14,22 +14,27 @@
             font-size: 15px;
         }
 
+        body {
+            padding: 40px;
+        }
+
         div {
-            height: 40px;
-            background-color: #ccc;
-            margin: 40px;
+            height: 50px;
+            background-color: #eee;
+            margin: 10px;
+            border-radius: 4px;
         }
 
         div:before {
             content: attr(data-responsive-attributes);
-            line-height: 40px;
+            line-height: 50px;
             display: block;
             width: 100%;
-            height: 40px;
+            height: 50px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-            padding: 0 12px;
+            padding: 0 17px;
             color: #111;
             box-sizing: border-box;
         }
@@ -49,6 +54,27 @@
         [data-state2="active"]:before {
             color: #fff;
         }
+
+        [data-state3] {
+            background: rgb(198, 96, 6);
+        }
+
+        [data-state3]:before {
+            color: #fff;
+        }
+
+        [data-state4="value1"] {
+            background: rgb(198, 6, 195);
+        }
+
+        [data-state4="value2"] {
+            background: rgb(198, 6, 6);
+        }
+
+        [data-state4="value1"]:before,
+        [data-state4="value2"]:before:before {
+            color: #fff;
+        }
     </style>
     <script>
         function check1(element, details) {
@@ -58,13 +84,18 @@
 </head>
 
 <body data-property1="value1">
-    <div data-responsive-attributes="w<500=>data-state=active"></div>
-    <div data-responsive-attributes="vw<500=>data-state=active"></div>
-    <div data-responsive-attributes="vw<=500=>data-state=active"></div>
-    <div data-responsive-attributes="w<700=>data-state=active,w<500=>data-state2=active"></div>
-    <div data-responsive-attributes="w<500&&f(check1)=>data-state=active"></div>
-    <div data-responsive-attributes="w<500&&q(body[data-property1=value1])=>data-state=active"></div>
-    <div data-responsive-attributes="w<500&&q(body[data-property1=value2])=>data-state=active"></div>
+    <div data-responsive-attributes="w<500 => data-state=active"></div>
+    <div data-responsive-attributes="vw<500 => data-state=active"></div>
+    <div data-responsive-attributes="vw<=500 => data-state=active"></div>
+    <div data-responsive-attributes="vw<500 && vh<500 => data-state=active"></div>
+    <div data-responsive-attributes="w<700 => data-state=active, w<500 => data-state2=active"></div>
+    <div data-responsive-attributes="w<500 && f(check1) => data-state=active"></div>
+    <div data-responsive-attributes="w<500 && q(body[data-property1=value1]) => data-state=active"></div>
+    <div data-responsive-attributes="w<500 && q(body[data-property1=value2]) => data-state=active"></div>
+    <div data-responsive-attributes="w<500 => data-state3"></div>
+    <div data-responsive-attributes="w<700 => data-state4=value1, w<500 => data-state4=value2"></div>
+    <div data-responsive-attributes="w<500 => data-state4=value1, w<500 => data-state4=value2"></div>
+    <div data-responsive-attributes="w<500 => data-state4=value2, w<500 => data-state4=value1"></div>
 </body>
 
 </html>

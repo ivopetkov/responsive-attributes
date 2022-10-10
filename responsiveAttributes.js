@@ -97,36 +97,19 @@ var responsiveAttributes = typeof responsiveAttributes !== 'undefined' ? respons
             };
             var data = parseAttributeValue(element.getAttribute('data-responsive-attributes'));
             for (var attributeName in data) {
-                var attributeValue = element.getAttribute(attributeName); // current value
-                if (attributeValue === null) {
-                    attributeValue = '';
-                }
-                var attributeValueParts = attributeValue.length > 0 ? attributeValue.split(' ') : [];
-                var values = data[attributeName];
-                var valuesCount = values.length;
-                for (var k = 0; k < valuesCount; k++) {
-                    var value = values[k][1];
-                    var add = checkExpression(element, values[k][0], details);
-                    var found = false;
-                    var attributeValuePartsCount = attributeValueParts.length;
-                    for (var m = 0; m < attributeValuePartsCount; m++) {
-                        if (attributeValueParts[m] === value) {
-                            if (add) {
-                                found = true;
-                            } else {
-                                attributeValueParts.splice(m, 1);
-                            }
-                            break;
-                        }
-                    }
-                    if (add && !found) {
-                        attributeValueParts.push(value);
+                var newValue = null;
+                var expressions = data[attributeName];
+                var expressionsCount = expressions.length;
+                for (var j = 0; j < expressionsCount; j++) {
+                    if (checkExpression(element, expressions[j][0], details)) {
+                        newValue = expressions[j][1];
                     }
                 }
-
-                var valueToSet = attributeValueParts.join(' ');
-                if (element.getAttribute(attributeName) !== valueToSet) {
-                    element.setAttribute(attributeName, valueToSet);
+                if (newValue === null) {
+                    element.removeAttribute(attributeName);
+                }
+                if (element.getAttribute(attributeName) !== newValue) {
+                    element.setAttribute(attributeName, newValue);
                 }
             }
         }

@@ -11,7 +11,7 @@ var responsiveAttributes = typeof responsiveAttributes !== 'undefined' ? respons
 
     var parseAttributeValue = function (value) { // {atttibuteName1:[[expression1,value1], [expression2,value2]], atttibuteName2:[[expression3,value3]]}
         if (typeof cache[value] === 'undefined') {
-            var parts = value.split(','); // rules are separated by ','
+            var parts = value.split(','); // multiple rules are separated by ','
             var partsCount = parts.length;
             var result = {};
             for (var i = 0; i < partsCount; i++) {
@@ -20,16 +20,14 @@ var responsiveAttributes = typeof responsiveAttributes !== 'undefined' ? respons
                     var expression = parts2[0].trim();
                     if (expression.length > 0) {
                         var parts3 = parts2[1].split('=');
-                        if (typeof parts3[0] !== 'undefined' && typeof parts3[1] !== 'undefined') {
+                        if (typeof parts3[0] !== 'undefined') {
                             var attributeName = parts3[0].trim();
                             if (attributeName.length > 0) {
-                                var attributeValue = parts3[1].trim();
-                                if (attributeValue.length > 0) {
-                                    if (typeof result[attributeName] === 'undefined') {
-                                        result[attributeName] = [];
-                                    }
-                                    result[attributeName].push([expression, attributeValue]);
+                                var attributeValue = typeof parts3[1] !== 'undefined' ? parts3[1].trim() : '';
+                                if (typeof result[attributeName] === 'undefined') {
+                                    result[attributeName] = [];
                                 }
+                                result[attributeName].push([expression, attributeValue]);
                             }
                         }
                     }

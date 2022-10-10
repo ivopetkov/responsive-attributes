@@ -107,8 +107,7 @@ var responsiveAttributes = typeof responsiveAttributes !== 'undefined' ? respons
                 }
                 if (newValue === null) {
                     element.removeAttribute(attributeName);
-                }
-                if (element.getAttribute(attributeName) !== newValue) {
+                } else if (element.getAttribute(attributeName) !== newValue) {
                     element.setAttribute(attributeName, newValue);
                 }
             }

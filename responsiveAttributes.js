@@ -9,13 +9,13 @@ var responsiveAttributes = typeof responsiveAttributes !== 'undefined' ? respons
 
     var cache = [];
 
-    var parseAttributeValue = function (value) {
+    var parseAttributeValue = function (value) { // {atttibuteName1:[[expression1,value1], [expression2,value2]], atttibuteName2:[[expression3,value3]]}
         if (typeof cache[value] === 'undefined') {
-            var parts = value.split(',');
+            var parts = value.split(','); // rules are separated by ','
             var partsCount = parts.length;
-            var result = [];
+            var result = {};
             for (var i = 0; i < partsCount; i++) {
-                var parts2 = parts[i].split('=>');
+                var parts2 = parts[i].split('=>'); // on the left of '=>' is the expression to check, on the right is the attribute to set
                 if (typeof parts2[0] !== 'undefined' && typeof parts2[1] !== 'undefined') {
                     var expression = parts2[0].trim();
                     if (expression.length > 0) {
@@ -99,7 +99,7 @@ var responsiveAttributes = typeof responsiveAttributes !== 'undefined' ? respons
             };
             var data = parseAttributeValue(element.getAttribute('data-responsive-attributes'));
             for (var attributeName in data) {
-                var attributeValue = element.getAttribute(attributeName);
+                var attributeValue = element.getAttribute(attributeName); // current value
                 if (attributeValue === null) {
                     attributeValue = '';
                 }

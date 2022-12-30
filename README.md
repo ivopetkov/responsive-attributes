@@ -78,3 +78,11 @@ If the element's width is lower than 200px set attribute `data-width=small`. If 
 ```html
 <div data-responsive-attributes="w<200=>data-width=small,h<200=>data-height=small"></div>
 ```
+
+### 5. Multiple rules in multiple attributes
+This is makes it easier to modify rules with JavaScript. Just specify `data-responsive-attributes="*"` and add multiple attributes starting with `data-responsive-attributes-`.
+
+If the element's width is lower than 200px set attribute `data-width=small`. If the element's height is lower than 200px set attribute `data-height=small`.
+```html
+<div data-responsive-attributes="*" data-responsive-attributes-width="w<200=>data-width=small"  data-responsive-attributes-height="h<200=>data-height=small"></div>
+```

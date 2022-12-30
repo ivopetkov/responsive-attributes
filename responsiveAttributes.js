@@ -95,21 +95,35 @@ var responsiveAttributes = typeof responsiveAttributes !== 'undefined' ? respons
                 'width': rectangle.width,
                 'height': rectangle.height
             };
-            var data = parseAttributeValue(element.getAttribute('data-responsive-attributes'));
-            for (var attributeName in data) {
-                var newValue = null;
-                var expressions = data[attributeName];
-                var expressionsCount = expressions.length;
-                for (var j = 0; j < expressionsCount; j++) {
-                    if (checkExpression(element, expressions[j][0], details)) {
-                        newValue = expressions[j][1];
+            var update = function (attributeValue) {
+                var data = parseAttributeValue(attributeValue);
+                for (var attributeName in data) {
+                    var newValue = null;
+                    var expressions = data[attributeName];
+                    var expressionsCount = expressions.length;
+                    for (var j = 0; j < expressionsCount; j++) {
+                        if (checkExpression(element, expressions[j][0], details)) {
+                            newValue = expressions[j][1];
+                        }
+                    }
+                    if (newValue === null) {
+                        element.removeAttribute(attributeName);
+                    } else if (element.getAttribute(attributeName) !== newValue) {
+                        element.setAttribute(attributeName, newValue);
                     }
                 }
-                if (newValue === null) {
-                    element.removeAttribute(attributeName);
-                } else if (element.getAttribute(attributeName) !== newValue) {
-                    element.setAttribute(attributeName, newValue);
+            };
+            var attributeValue = element.getAttribute('data-responsive-attributes');
+            if (attributeValue === '*') {
+                var elementAttributes = element.attributes;
+                for (var j = 0; j < elementAttributes.length; j++) {
+                    var elementAttribute = elementAttributes[j];
+                    if (elementAttribute.name.indexOf('data-responsive-attributes-') === 0) {
+                        update(elementAttribute.value);
+                    }
                 }
+            } else {
+                update(attributeValue);
             }
         }
         running = false;

@@ -23,11 +23,13 @@
             background-color: #eee;
             margin: 10px;
             border-radius: 4px;
+            border: 5px solid transparent;
+            box-sizing: border-box;
         }
 
         div:before {
             content: attr(data-responsive-attributes);
-            line-height: 50px;
+            line-height: 40px;
             display: block;
             width: 100%;
             height: 50px;
@@ -39,41 +41,36 @@
             box-sizing: border-box;
         }
 
-        [data-state="active"] {
+        div[data-responsive-attributes-attr1]:before {
+            content: 'attr1: ' attr(data-responsive-attributes-attr1) ', attr2: ' attr(data-responsive-attributes-attr2);
+        }
+
+        [data-color="green"] {
             background: green;
         }
 
-        [data-state="active"]:before {
-            color: #fff;
+        [data-color="purple"] {
+            background: rgb(139, 5, 163);
         }
 
-        [data-state2="active"] {
-            background: rgb(82, 6, 198);
-        }
-
-        [data-state2="active"]:before {
-            color: #fff;
-        }
-
-        [data-state3] {
-            background: rgb(198, 96, 6);
-        }
-
-        [data-state3]:before {
-            color: #fff;
-        }
-
-        [data-state4="value1"] {
-            background: rgb(198, 6, 195);
-        }
-
-        [data-state4="value2"] {
+        [data-color="red"] {
             background: rgb(198, 6, 6);
         }
 
-        [data-state4="value1"]:before,
-        [data-state4="value2"]:before:before {
+        [data-color]:before {
             color: #fff;
+        }
+
+        [data-color-orange] {
+            background: rgb(198, 96, 6);
+        }
+
+        [data-color-orange]:before {
+            color: #fff;
+        }
+
+        [data-border-black] {
+            border: 5px solid black;
         }
     </style>
     <script>
@@ -83,19 +80,22 @@
     </script>
 </head>
 
-<body data-property1="value1">
-    <div data-responsive-attributes="w<500 => data-state=active"></div>
-    <div data-responsive-attributes="vw<500 => data-state=active"></div>
-    <div data-responsive-attributes="vw<=500 => data-state=active"></div>
-    <div data-responsive-attributes="vw<500 && vh<500 => data-state=active"></div>
-    <div data-responsive-attributes="w<700 => data-state=active, w<500 => data-state2=active"></div>
-    <div data-responsive-attributes="w<500 && f(check1) => data-state=active"></div>
-    <div data-responsive-attributes="w<500 && q(body[data-property1=value1]) => data-state=active"></div>
-    <div data-responsive-attributes="w<500 && q(body[data-property1=value2]) => data-state=active"></div>
-    <div data-responsive-attributes="w<500 => data-state3"></div>
-    <div data-responsive-attributes="w<700 => data-state4=value1, w<500 => data-state4=value2"></div>
-    <div data-responsive-attributes="w<500 => data-state4=value1, w<500 => data-state4=value2"></div>
-    <div data-responsive-attributes="w<500 => data-state4=value2, w<500 => data-state4=value1"></div>
+<body data-tag="body">
+    <div data-responsive-attributes="w<500 => data-color=green"></div>
+    <div data-responsive-attributes="vw<500 => data-color=green"></div>
+    <div data-responsive-attributes="vw<=500 => data-color=green"></div>
+    <div data-responsive-attributes="vw<500 && vh<500 => data-color=green"></div>
+    <div data-responsive-attributes="w<700 => data-color=green, w<500 => data-color=purple"></div>
+    <div data-responsive-attributes="w<500 && f(check1) => data-color=green"></div>
+    <div data-responsive-attributes="w<500 && q(body[data-tag=body]) => data-color=green"></div>
+    <div data-responsive-attributes="w<500 && q(body[data-tag=notbody]) => data-color=green"></div>
+    <div data-responsive-attributes="w<500 => data-color-orange"></div>
+    <div data-responsive-attributes="w<700 => data-color=purple, w<500 => data-color=red"></div>
+    <div data-responsive-attributes="w<500 => data-color=purple, w<500 => data-color=red"></div>
+    <div data-responsive-attributes="w<500 => data-color=red, w<700 => data-color=purple"></div>
+    <div data-responsive-attributes="w<700 => data-color=purple, w<500 => data-color=red"></div>
+    <div data-responsive-attributes="*" data-responsive-attributes-attr1="w<700 => data-color=red"
+        data-responsive-attributes-attr2="w<500 => data-border-black"></div>
 </body>
 
 </html>

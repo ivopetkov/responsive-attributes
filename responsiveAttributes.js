@@ -93,10 +93,20 @@ var responsiveAttributes = typeof responsiveAttributes !== 'undefined' ? respons
             if (typeof element.responsiveAttributesOververAttached === 'undefined') {
                 element.responsiveAttributesOververAttached = true;
                 if (typeof MutationObserver !== 'undefined') {
-                    var observer = new MutationObserver(function () {
-                        run();
+                    var observer = new MutationObserver(function (mutationList) {
+                        var update = false;
+                        for (var mutation of mutationList) {
+                            if (mutation.type === 'attributes') {
+                                if (mutation.attributeName.indexOf('data-responsive-attributes') === 0) {
+                                    update = true;
+                                }
+                            }
+                        }
+                        if (update) {
+                            run();
+                        }
                     });
-                    observer.observe(element, { attributes: true, childList: true, subtree: true });
+                    observer.observe(element, { attributes: true });
                 }
             }
             var rectangle = element.getBoundingClientRect();

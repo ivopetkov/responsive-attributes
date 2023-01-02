@@ -94,8 +94,11 @@
     <div data-responsive-attributes="w<500 => data-color=purple, w<500 => data-color=red"></div>
     <div data-responsive-attributes="w<500 => data-color=red, w<700 => data-color=purple"></div>
     <div data-responsive-attributes="w<700 => data-color=purple, w<500 => data-color=red"></div>
-    <div data-responsive-attributes="*" data-responsive-attributes-attr1="w<700 => data-color=red"
+    <div data-responsive-attributes="*" data-responsive-attributes-attr1="w<900 => data-color=red"
         data-responsive-attributes-attr2="w<500 => data-border-black"></div>
+    <button
+        onclick="document.querySelector('[data-responsive-attributes-attr1]').setAttribute('data-responsive-attributes-attr1','w<700 => data-color=red')">Update
+        last one</button>
 </body>
 
 </html>

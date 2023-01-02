@@ -90,6 +90,15 @@ var responsiveAttributes = typeof responsiveAttributes !== 'undefined' ? respons
         var elementsCount = elements.length;
         for (var i = 0; i < elementsCount; i++) {
             var element = elements[i];
+            if (typeof element.responsiveAttributesOververAttached === 'undefined') {
+                element.responsiveAttributesOververAttached = true;
+                if (typeof MutationObserver !== 'undefined') {
+                    var observer = new MutationObserver(function () {
+                        run();
+                    });
+                    observer.observe(element, { attributes: true, childList: true, subtree: true });
+                }
+            }
             var rectangle = element.getBoundingClientRect();
             var details = {
                 'width': rectangle.width,

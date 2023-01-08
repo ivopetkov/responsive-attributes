@@ -80,6 +80,9 @@ var responsiveAttributes = typeof responsiveAttributes !== 'undefined' ? respons
         }
     };
 
+    var elementAttributesObserver = null;
+    var elementsWithAttachedMutationObservers = [];
+
     var running = false;
     var run = function () {
         if (running) {
@@ -90,25 +93,6 @@ var responsiveAttributes = typeof responsiveAttributes !== 'undefined' ? respons
         var elementsCount = elements.length;
         for (var i = 0; i < elementsCount; i++) {
             var element = elements[i];
-            if (typeof element.responsiveAttributesOververAttached === 'undefined') {
-                element.responsiveAttributesOververAttached = true;
-                if (typeof MutationObserver !== 'undefined') {
-                    var observer = new MutationObserver(function (mutationList) {
-                        var update = false;
-                        for (var mutation of mutationList) {
-                            if (mutation.type === 'attributes') {
-                                if (mutation.attributeName.indexOf('data-responsive-attributes') === 0) {
-                                    update = true;
-                                }
-                            }
-                        }
-                        if (update) {
-                            run();
-                        }
-                    });
-                    observer.observe(element, { attributes: true });
-                }
-            }
             var rectangle = element.getBoundingClientRect();
             var details = {
                 'width': rectangle.width,
@@ -144,9 +128,29 @@ var responsiveAttributes = typeof responsiveAttributes !== 'undefined' ? respons
             } else {
                 update(attributeValue);
             }
+            if (elementAttributesObserver !== null && elementsWithAttachedMutationObservers.indexOf(element) === -1) {
+                elementsWithAttachedMutationObservers.push(element);
+                elementAttributesObserver.observe(element, { attributes: true });
+            }
         }
         running = false;
     };
+
+    if (typeof MutationObserver !== 'undefined') {
+        elementAttributesObserver = new MutationObserver(function (mutationList) {
+            var update = false;
+            for (var mutation of mutationList) {
+                if (mutation.type === 'attributes') {
+                    if (mutation.attributeName.indexOf('data-responsive-attributes') === 0) {
+                        update = true;
+                    }
+                }
+            }
+            if (update) {
+                run();
+            }
+        });
+    }
 
     var attachEvents = function () {
         window.addEventListener('resize', run);

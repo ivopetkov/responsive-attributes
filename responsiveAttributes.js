@@ -163,11 +163,17 @@ var responsiveAttributes = typeof responsiveAttributes !== 'undefined' ? respons
             observer.observe(document.querySelector('body'), { childList: true, subtree: true });
         }
     };
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', attachEvents);
-    } else {
+
+    document.addEventListener('readystatechange', () => {
+        if (document.readyState === 'interactive') {
+            attachEvents();
+        }
+        run();
+    });
+    if (document.readyState === 'complete') {
         attachEvents();
     }
+    run();
 
     return { 'run': run };
 

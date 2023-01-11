@@ -152,7 +152,12 @@ var responsiveAttributes = typeof responsiveAttributes !== 'undefined' ? respons
         });
     }
 
+    var eventsAttached = false;
     var attachEvents = function () {
+        if (eventsAttached) {
+            return;
+        }
+        eventsAttached = true;
         window.addEventListener('resize', run);
         window.addEventListener('load', run);
         window.addEventListener('orientationchange', run);
@@ -164,10 +169,8 @@ var responsiveAttributes = typeof responsiveAttributes !== 'undefined' ? respons
         }
     };
 
-    document.addEventListener('readystatechange', () => {
-        if (document.readyState === 'interactive') {
-            attachEvents();
-        }
+    document.addEventListener('readystatechange', () => { // interactive or complete
+        attachEvents();
         run();
     });
     if (document.readyState === 'complete') {

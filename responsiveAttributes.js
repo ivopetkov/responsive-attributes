@@ -83,12 +83,13 @@ var responsiveAttributes = typeof responsiveAttributes !== 'undefined' ? respons
     var elementAttributesObserver = null;
     var elementsWithAttachedMutationObservers = [];
 
-    var running = false;
+    var runAnimationFrameRequest = null;
+    var runOnAnimationFrame = function () {
+        runAnimationFrameRequest = true;
+    };
+
     var run = function () {
-        if (running) {
-            return;
-        }
-        running = true;
+        //console.time('responsiveAttributes:run');
         var elements = document.querySelectorAll('[data-responsive-attributes]');
         var elementsCount = elements.length;
         for (var i = 0; i < elementsCount; i++) {
@@ -133,8 +134,12 @@ var responsiveAttributes = typeof responsiveAttributes !== 'undefined' ? respons
                 elementAttributesObserver.observe(element, { attributes: true });
             }
         }
-        running = false;
+        //console.timeEnd('responsiveAttributes:run');
     };
+
+    window.addEventListener('resize', runOnAnimationFrame);
+    window.addEventListener('load', runOnAnimationFrame);
+    window.addEventListener('orientationchange', runOnAnimationFrame);
 
     if (typeof MutationObserver !== 'undefined') {
         elementAttributesObserver = new MutationObserver(function (mutationList) {
@@ -147,36 +152,40 @@ var responsiveAttributes = typeof responsiveAttributes !== 'undefined' ? respons
                 }
             }
             if (update) {
-                run();
+                runOnAnimationFrame();
             }
         });
+        var observer = new MutationObserver(function () {
+            runOnAnimationFrame();
+        });
+        observer.observe(document, { childList: true, subtree: true });
     }
 
-    var eventsAttached = false;
-    var attachEvents = function () {
-        if (eventsAttached) {
-            return;
-        }
-        eventsAttached = true;
-        window.addEventListener('resize', run);
-        window.addEventListener('load', run);
-        window.addEventListener('orientationchange', run);
-        if (typeof MutationObserver !== 'undefined') {
-            var observer = new MutationObserver(function () {
-                run();
-            });
-            observer.observe(document.querySelector('body'), { childList: true, subtree: true });
-        }
+    var requestAnimationFrameFunction = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || function (callback) {
+        window.setTimeout(callback, 1000 / 60);
     };
 
+    var check = function () {
+        if (document.readyState === 'loading') {
+            runOnAnimationFrame();
+        }
+
+        if (runAnimationFrameRequest !== null) {
+            run();
+            runAnimationFrameRequest = null;
+        }
+
+        requestAnimationFrameFunction(check);
+    };
+    check();
+
     document.addEventListener('readystatechange', () => { // interactive or complete
-        attachEvents();
         run();
     });
+
     if (document.readyState === 'complete') {
-        attachEvents();
+        run();
     }
-    run();
 
     return { 'run': run };
 

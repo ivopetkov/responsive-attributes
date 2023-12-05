@@ -3,11 +3,16 @@
  * http://ivopetkov.com/
  * Copyright (c) Ivo Petkov
  * Free to use under the MIT license.
+ * 
+ * Debug:
+ * document.cookie = "ivopetkov-responsive-attributes=debug";
  */
 
 var responsiveAttributes = typeof responsiveAttributes !== 'undefined' ? responsiveAttributes : (function () {
 
     var cache = [];
+
+    var debug = document.cookie.indexOf('ivopetkov-responsive-attributes=debug') !== -1;
 
     var parseAttributeValue = function (value) { // {atttibuteName1:[[expression1,value1], [expression2,value2]], atttibuteName2:[[expression3,value3]]}
         if (typeof cache[value] === 'undefined') {
@@ -89,7 +94,10 @@ var responsiveAttributes = typeof responsiveAttributes !== 'undefined' ? respons
     };
 
     var run = function () {
-        //console.time('responsiveAttributes:run');
+        if (debug) {
+            var timerLabel = 'responsiveAttributes::run';
+            console.time(timerLabel);
+        }
         var elements = document.querySelectorAll('[data-responsive-attributes]');
         var elementsCount = elements.length;
         for (var i = 0; i < elementsCount; i++) {
@@ -134,7 +142,9 @@ var responsiveAttributes = typeof responsiveAttributes !== 'undefined' ? respons
                 elementAttributesObserver.observe(element, { attributes: true });
             }
         }
-        //console.timeEnd('responsiveAttributes:run');
+        if (debug) {
+            console.timeEnd(timerLabel);
+        }
     };
 
     window.addEventListener('resize', runOnAnimationFrame);
